@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useMemo } from 'react';
 import { IDCardData, UserRole, AuthState } from './types.ts';
 import Login from './components/Login.tsx';
@@ -102,11 +101,9 @@ const App: React.FC = () => {
       }
     });
 
-    // Real-time Database Subscription
     const channel = supabase
       .channel('id_cards_realtime')
       .on('postgres_changes', { event: '*', table: 'id_cards', schema: 'public' }, (payload) => {
-        console.log('Realtime Event:', payload);
         if (payload.eventType === 'DELETE') {
           const deletedId = payload.old.id;
           setCards(prev => prev.filter(c => c.id !== deletedId));
@@ -173,7 +170,6 @@ const App: React.FC = () => {
 
   const handleUpdateStatus = async (id: string, status: 'Approved' | 'Rejected') => {
     setIsLoading(true);
-    // Optimistic Update
     setCards(prev => prev.map(c => c.id === id ? { ...c, status } : c));
     if (viewingCard?.id === id) setViewingCard({ ...viewingCard, status });
     
@@ -184,7 +180,7 @@ const App: React.FC = () => {
 
     if (error) {
       alert("Permission Denied: " + error.message);
-      fetchData(); // Reset
+      fetchData();
     }
     setIsLoading(false);
   };
@@ -200,7 +196,6 @@ const App: React.FC = () => {
         .eq('id', id);
 
       if (error) {
-        console.error("Delete error:", error);
         alert("Action Failed: " + error.message);
       } else {
         setCards(prev => prev.filter(c => c.id !== id));
@@ -299,21 +294,21 @@ const App: React.FC = () => {
               />
             </div>
             <div className="flex flex-col items-center">
-              <div className="w-full flex justify-between items-center mb-6 px-4">
+              <div className="w-full flex justify-between items-center mb-4 px-4">
                 <h3 className="text-xs font-black text-gray-400 uppercase tracking-[0.2em]">Live Identity Preview</h3>
                 <div className="flex items-center gap-2">
                    <div className={`w-2 h-2 rounded-full ${currentForm.status === 'Approved' ? 'bg-green-500' : 'bg-yellow-500'} animate-pulse`}></div>
                    <span className="text-[10px] font-bold text-gray-500 uppercase">{currentForm.status}</span>
                 </div>
               </div>
-              <div className="bg-white p-12 rounded-[2rem] shadow-2xl border border-gray-100 mb-8 transform transition-all hover:scale-[1.01]">
+              <div className="bg-white p-6 md:p-10 rounded-[2rem] shadow-2xl border border-gray-100 mb-6 transform transition-all hover:scale-[1.01] w-full max-w-sm flex justify-center">
                 <IDCard data={currentForm} />
               </div>
               
               <div className="flex flex-wrap justify-center gap-4 mb-10 w-full max-w-md">
                 <button 
                   onClick={() => downloadImage('capture-combined-container', `${currentForm.name || 'Student'}_ID_Full`)}
-                  className="w-full px-6 py-5 bg-blue-600 text-white text-xs font-black uppercase tracking-widest rounded-2xl hover:bg-blue-700 transition-all shadow-xl shadow-blue-100 active:scale-[0.98] flex items-center justify-center gap-3"
+                  className="w-full px-6 py-4 bg-blue-600 text-white text-xs font-black uppercase tracking-widest rounded-2xl hover:bg-blue-700 transition-all shadow-xl shadow-blue-100 active:scale-[0.98] flex items-center justify-center gap-3"
                 >
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
                   Get Digital ID (PNG)
@@ -368,20 +363,20 @@ const App: React.FC = () => {
                       ) : (
                         filteredCards.map(card => (
                           <tr key={card.id} className="hover:bg-blue-50/30 transition-all cursor-pointer group" onClick={() => setViewingCard(card)}>
-                            <td className="px-6 py-6">
+                            <td className="px-6 py-4">
                               <div className="flex items-center space-x-4">
-                                <img src={card.photoUrl || DEFAULT_PHOTO} className="w-14 h-14 rounded-2xl object-cover border-2 border-white shadow-md" alt="" />
+                                <img src={card.photoUrl || DEFAULT_PHOTO} className="w-12 h-12 rounded-xl object-cover border-2 border-white shadow-md" alt="" />
                                 <div>
                                   <p className="font-black text-gray-900 text-sm group-hover:text-blue-600 transition-colors uppercase tracking-tight">{card.name}</p>
                                   <p className="text-[10px] text-gray-400 font-bold">{card.email}</p>
                                 </div>
                               </div>
                             </td>
-                            <td className="px-6 py-6">
+                            <td className="px-6 py-4">
                               <p className="font-black text-gray-700 text-xs">{card.idNo}</p>
                               <p className="text-[9px] text-blue-400 font-black uppercase tracking-tighter mt-1">{card.branch}</p>
                             </td>
-                            <td className="px-6 py-6">
+                            <td className="px-6 py-4">
                               <div className={`inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-[9px] font-black uppercase tracking-widest ${
                                 card.status === 'Approved' ? 'bg-green-100 text-green-700' : 
                                 card.status === 'Rejected' ? 'bg-red-100 text-red-700' : 
@@ -391,15 +386,15 @@ const App: React.FC = () => {
                                 {card.status}
                               </div>
                             </td>
-                            <td className="px-6 py-6">
-                              <div className="flex items-center justify-end space-x-3" onClick={e => e.stopPropagation()}>
-                                <button onClick={() => handleUpdateStatus(card.id, 'Approved')} className="p-3 bg-green-50 text-green-600 rounded-xl hover:bg-green-600 hover:text-white transition-all shadow-sm" title="Approve">
+                            <td className="px-6 py-4">
+                              <div className="flex items-center justify-end space-x-2" onClick={e => e.stopPropagation()}>
+                                <button onClick={() => handleUpdateStatus(card.id, 'Approved')} className="p-2.5 bg-green-50 text-green-600 rounded-xl hover:bg-green-600 hover:text-white transition-all shadow-sm" title="Approve">
                                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7"></path></svg>
                                 </button>
-                                <button onClick={() => handleUpdateStatus(card.id, 'Rejected')} className="p-3 bg-red-50 text-red-600 rounded-xl hover:bg-red-600 hover:text-white transition-all shadow-sm" title="Reject">
+                                <button onClick={() => handleUpdateStatus(card.id, 'Rejected')} className="p-2.5 bg-red-50 text-red-600 rounded-xl hover:bg-red-600 hover:text-white transition-all shadow-sm" title="Reject">
                                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M6 18L18 6M6 6l12 12"></path></svg>
                                 </button>
-                                <button onClick={() => handleDelete(card.id)} className="p-3 bg-gray-50 text-gray-400 rounded-xl hover:bg-red-50 hover:text-red-600 transition-all shadow-sm" title="Delete">
+                                <button onClick={() => handleDelete(card.id)} className="p-2.5 bg-gray-50 text-gray-400 rounded-xl hover:bg-red-50 hover:text-red-600 transition-all shadow-sm" title="Delete">
                                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
                                 </button>
                               </div>
@@ -413,10 +408,10 @@ const App: React.FC = () => {
               </div>
 
               <div className="space-y-6">
-                <div className="bg-white p-10 rounded-3xl shadow-sm border border-gray-100 min-h-[500px] flex flex-col items-center">
+                <div className="bg-white p-6 rounded-3xl shadow-sm border border-gray-100 min-h-[520px] flex flex-col items-center">
                   {viewingCard ? (
                     <div className="flex flex-col items-center w-full animate-in zoom-in-95 duration-300">
-                      <div className="flex justify-between w-full mb-10 items-center">
+                      <div className="flex justify-between w-full mb-6 items-center">
                          <span className="text-[10px] font-black text-blue-600 uppercase tracking-widest bg-blue-50 px-3 py-1 rounded-lg">Audit View</span>
                          <button 
                             onClick={() => downloadImage('capture-combined-container', `${viewingCard.name}_Full_Card`)}
@@ -425,7 +420,7 @@ const App: React.FC = () => {
                             Export
                           </button>
                       </div>
-                      <div className="scale-[0.8] origin-top transition-all">
+                      <div className="scale-[0.85] origin-top transition-all">
                         <IDCard data={viewingCard} />
                       </div>
                     </div>
