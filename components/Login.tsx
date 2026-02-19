@@ -130,7 +130,7 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className="block w-full px-5 py-4 border-2 border-gray-50 text-gray-900 rounded-2xl focus:ring-4 focus:ring-blue-100 focus:border-blue-500 outline-none transition-all font-bold bg-gray-50"
-                  placeholder={role === 'ADMIN' ? "admin@gmail.com" : "your.email@college.edu"}
+                  placeholder={role === 'ADMIN' ? "Gmail" : "your.email@college.edu"}
                 />
               </div>
 
@@ -145,7 +145,7 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
                   placeholder="••••••••"
                 />
                 {role === 'ADMIN' && (
-                  <p className="mt-2 text-[10px] text-blue-500 font-bold italic ml-1">* Use Admin123 as the password</p>
+                  <p className="mt-2 text-[10px] text-blue-500 font-bold italic ml-1"></p>
                 )}
               </div>
 
