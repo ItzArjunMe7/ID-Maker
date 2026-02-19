@@ -6,7 +6,7 @@ export const COLLEGE_INFO = {
   campusName: "S.S. Jondhle Knowledge City",
   location: "Opp. Railway Station, Asangaon (East)",
   email: "vjtsscoe@rediffmail.com",
-  contact: "9324333333",
+  contact: "Contact No. 9324333333",
   collegeName: "SHIVAJIRAO S. JONDHLE COLLEGE OF ENGINEERING & TECHNOLOGY",
   accreditation: "(Approved by AICTE, New Delhi Recognized by DTE, Govt. of Maharashtra & Affiliated to University of Mumbai)",
   academicYear: "2026-30"
