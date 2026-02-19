@@ -1,13 +1,13 @@
 
 import React, { useState, useEffect, useMemo } from 'react';
-import { IDCardData, UserRole, AuthState } from './types';
-import Login from './components/Login';
-import StudentForm from './components/StudentForm';
-import IDCard from './components/IDCard';
-import SubmissionModal from './components/SubmissionModal';
-import { DEFAULT_PHOTO } from './constants';
+import { IDCardData, UserRole, AuthState } from './types.ts';
+import Login from './components/Login.tsx';
+import StudentForm from './components/StudentForm.tsx';
+import IDCard from './components/IDCard.tsx';
+import SubmissionModal from './components/SubmissionModal.tsx';
+import { DEFAULT_PHOTO } from './constants.tsx';
 import * as htmlToImage from 'html-to-image';
-import { supabase } from './supabase';
+import { supabase } from './supabase.ts';
 
 const INITIAL_FORM_STATE: IDCardData = {
   id: '',
@@ -108,7 +108,6 @@ const App: React.FC = () => {
       .on('postgres_changes', { event: '*', table: 'id_cards', schema: 'public' }, (payload) => {
         console.log('Realtime Event:', payload);
         if (payload.eventType === 'DELETE') {
-          // Fallback: Check both payload.old.id and payload.old.email depending on table PK
           const deletedId = payload.old.id;
           setCards(prev => prev.filter(c => c.id !== deletedId));
           setViewingCard(current => current?.id === deletedId ? null : current);
@@ -195,7 +194,6 @@ const App: React.FC = () => {
     if (window.confirm("ARE YOU SURE? This student's data will be permanently removed from the system.")) {
       setIsLoading(true);
       
-      // Perform deletion
       const { error } = await supabase
         .from('id_cards')
         .delete()
@@ -203,12 +201,10 @@ const App: React.FC = () => {
 
       if (error) {
         console.error("Delete error:", error);
-        alert("Action Failed: " + error.message + "\n\nTip: Ensure you have run the Admin SQL policies in your Supabase dashboard.");
+        alert("Action Failed: " + error.message);
       } else {
-        // Force local state update immediately for snappy UI
         setCards(prev => prev.filter(c => c.id !== id));
         if (viewingCard?.id === id) setViewingCard(null);
-        console.log("Record deleted successfully:", id);
       }
       setIsLoading(false);
     }
@@ -326,7 +322,6 @@ const App: React.FC = () => {
             </div>
           </div>
         ) : authState.user?.role === 'ADMIN' ? (
-          /* ADMIN DASHBOARD */
           <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-700">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-6 rounded-3xl shadow-sm border border-gray-100">
               <div className="relative flex-1">
@@ -430,7 +425,6 @@ const App: React.FC = () => {
                             Export
                           </button>
                       </div>
-                      
                       <div className="scale-[0.8] origin-top transition-all">
                         <IDCard data={viewingCard} />
                       </div>

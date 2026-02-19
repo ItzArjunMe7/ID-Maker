@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
-import { UserRole } from '../types';
-import { supabase } from '../supabase';
+import { UserRole } from '../types.ts';
+import { supabase } from '../supabase.ts';
 
 interface LoginProps {
   onLogin: (username: string, role: UserRole) => void;
@@ -17,7 +17,6 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
 
   const ADMIN_EMAIL = 'admin@gmail.com';
 
-  // Automatically switch to Admin role if the admin email is typed
   useEffect(() => {
     if (email.trim().toLowerCase() === ADMIN_EMAIL) {
       setRole('ADMIN');
@@ -31,14 +30,12 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
 
     const normalizedEmail = email.trim().toLowerCase();
 
-    // Strict Admin Authorization Check
     if (role === 'ADMIN' && normalizedEmail !== ADMIN_EMAIL) {
       setError("Unauthorized Email: Only admin@gmail.com is authorized for administrative access.");
       setLoading(false);
       return;
     }
 
-    // Strict Student Check
     if (role === 'STUDENT' && normalizedEmail === ADMIN_EMAIL) {
       setError("This is an Admin account. Please select 'Administrator' role to login.");
       setLoading(false);
@@ -53,7 +50,6 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
 
     try {
       if (isRegistering) {
-        // Sign Up process
         const { data, error: signUpError } = await supabase.auth.signUp({
           email: normalizedEmail,
           password,
@@ -63,7 +59,6 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
           onLogin(normalizedEmail, role);
         }
       } else {
-        // Sign In process
         const { data, error: signInError } = await supabase.auth.signInWithPassword({
           email: normalizedEmail,
           password,
@@ -75,7 +70,6 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
         }
       }
     } catch (err: any) {
-      // If user doesn't exist, help them
       if (err.message?.includes("Invalid login credentials")) {
         setError("Login Failed: If this is your first time, please use 'Register Now' below.");
       } else {
@@ -184,7 +178,6 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
               </div>
             </form>
           </div>
-          
           <div className="bg-gray-50 p-6 text-center border-t border-gray-100">
             <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest">
               Secure Cloud Infrastructure • Supabase Auth
