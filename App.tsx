@@ -28,7 +28,7 @@ const BRANCHES = [
   "Computer Engineering",
   "Mechanical Engineering",
   "Civil Engineering",
-  "Electrical Engineering",
+  "EXTC Engineering",
   "AI & Data Science"
 ];
 
