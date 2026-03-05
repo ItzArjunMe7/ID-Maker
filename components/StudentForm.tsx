@@ -94,7 +94,7 @@ const StudentForm: React.FC<StudentFormProps> = ({ data, onChange, onSubmit }) =
             <option value="Computer Engineering">Computer Engineering</option>
             <option value="Mechanical Engineering">Mechanical Engineering</option>
             <option value="Civil Engineering">Civil Engineering</option>
-            <option value="Electrical Engineering">Electrical Engineering</option>
+            <option value="EXTC Engineering">EXTC Engineering</option>
             <option value="AI & Data Science">AI & Data Science</option>
           </select>
         </div>
